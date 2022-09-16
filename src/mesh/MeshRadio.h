@@ -21,4 +21,6 @@ struct RegionInfo {
 extern const RegionInfo regions[];
 extern const RegionInfo *myRegion;
 
+extern bool Device_debug_mode_enable_f; //add by eason
+
 extern void initRegion();

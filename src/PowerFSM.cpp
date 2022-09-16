@@ -274,6 +274,16 @@ State stateSERIAL(serialEnter, NULL, serialExit, "SERIAL");
 State stateBOOT(bootEnter, NULL, NULL, "BOOT");
 State stateON(onEnter, onIdle, NULL, "ON");
 State statePOWER(powerEnter, powerIdle, powerExit, "POWER");
+
+//Eason add below...
+static void debugEnter() 
+{
+    screen->setOn(true);
+    setBluetoothEnable(true);
+    //screen->print("debugEnter...\n");
+}
+State stateDEBUG(debugEnter, NULL, NULL, "DEBUG");
+//Eason add above...
 Fsm powerFSM(&stateBOOT);
 
 void PowerFSM_setup()
@@ -358,7 +368,14 @@ void PowerFSM_setup()
 
     powerFSM.add_transition(&statePOWER, &stateON, EVENT_POWER_DISCONNECTED, NULL, "power disconnected");
     // powerFSM.add_transition(&stateSERIAL, &stateON, EVENT_POWER_DISCONNECTED, NULL, "power disconnected");
-
+    //Eason add below...
+    // If stateON and Debug mode entry, go to stateDEBUG
+    powerFSM.add_transition(&stateON, &stateDEBUG, EVENT_DEBUG_ENTRY, NULL, "debug mode entry");
+    // If stateDEUBG and Debug mode leave, go to stateON
+    powerFSM.add_transition(&stateDEBUG, &stateON, EVENT_DEBUG_LEAVE, NULL, "debug mode leave");
+    // IF stateDEUBG , add EVENT_PRESS
+    powerFSM.add_transition(&stateDEBUG, &stateDEBUG, EVENT_PRESS, screenPress, "Press"); // reenter On to restart our timers
+    //Eason add above...
     // the only way to leave state serial is for the client to disconnect (or we timeout and force disconnect them)
     // when we leave, go to ON (which might not be the correct state if we have power connected, we will fix that in onEnter)
     powerFSM.add_transition(&stateSERIAL, &stateON, EVENT_SERIAL_DISCONNECTED, NULL, "serial disconnect");

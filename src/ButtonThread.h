@@ -23,8 +23,8 @@ void wakeOnIrq(int irq, int mode)
         },
         FALLING);
 }
-uint8_t Laser_toggle_f; 
-uint8_t Buzzer_toggle_f;
+uint8_t Laser_toggle_f;     //eason add..
+uint8_t Buzzer_toggle_f;    //eason add..
 class ButtonThread : public concurrency::OSThread
 {
 // Prepare for button presses

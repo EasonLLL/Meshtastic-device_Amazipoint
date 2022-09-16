@@ -94,6 +94,13 @@ uint8_t Buzzer_count_d1=0;   //eason add..
 extern  void update_fuel_LED(void);   
 //seger add above..
 
+//Eason add below...
+//Device_debug_mode_enable_f
+//            0 = Disabled (Default)
+//            1 = Enabled
+bool Device_debug_mode_enable_f = false;   
+
+//Eason add above...
 
 uint32_t timeLastPowered = 0;
 

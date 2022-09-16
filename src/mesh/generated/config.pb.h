@@ -67,19 +67,35 @@ typedef enum _Config_DisplayConfig_GpsCoordinateFormat {
 } Config_DisplayConfig_GpsCoordinateFormat;
 
 typedef enum _Config_LoRaConfig_RegionCode { 
-    Config_LoRaConfig_RegionCode_Unset = 0, 
-    Config_LoRaConfig_RegionCode_US = 1, 
-    Config_LoRaConfig_RegionCode_EU433 = 2, 
-    Config_LoRaConfig_RegionCode_EU868 = 3, 
-    Config_LoRaConfig_RegionCode_CN = 4, 
-    Config_LoRaConfig_RegionCode_JP = 5, 
-    Config_LoRaConfig_RegionCode_ANZ = 6, 
-    Config_LoRaConfig_RegionCode_KR = 7, 
-    Config_LoRaConfig_RegionCode_TW = 8, 
-    Config_LoRaConfig_RegionCode_RU = 9, 
-    Config_LoRaConfig_RegionCode_IN = 10, 
-    Config_LoRaConfig_RegionCode_NZ865 = 11, 
-    Config_LoRaConfig_RegionCode_TH = 12 
+    Config_LoRaConfig_RegionCode_Unset  = 0, 
+    Config_LoRaConfig_RegionCode_US     = 1, 
+    Config_LoRaConfig_RegionCode_EU433  = 2, 
+    Config_LoRaConfig_RegionCode_EU868  = 3, 
+    Config_LoRaConfig_RegionCode_CN     = 4, 
+    Config_LoRaConfig_RegionCode_JP     = 5, 
+    Config_LoRaConfig_RegionCode_ANZ    = 6, 
+    Config_LoRaConfig_RegionCode_KR     = 7, 
+    Config_LoRaConfig_RegionCode_TW     = 8, 
+    Config_LoRaConfig_RegionCode_RU     = 9, 
+    Config_LoRaConfig_RegionCode_IN     = 10, 
+    Config_LoRaConfig_RegionCode_NZ865  = 11, 
+    Config_LoRaConfig_RegionCode_TH     = 12, 
+//eaosn add below...
+    Config_LoRaConfig_RegionCode_Unset_D    = 512, 
+    Config_LoRaConfig_RegionCode_US_D       = 512+1, 
+    Config_LoRaConfig_RegionCode_EU433_D    = 512+2, 
+    Config_LoRaConfig_RegionCode_EU868_D    = 512+3, 
+    Config_LoRaConfig_RegionCode_CN_D       = 512+4, 
+    Config_LoRaConfig_RegionCode_JP_D       = 512+5, 
+    Config_LoRaConfig_RegionCode_ANZ_D      = 512+6, 
+    Config_LoRaConfig_RegionCode_KR_D       = 512+7, 
+    Config_LoRaConfig_RegionCode_TW_D       = 512+8, 
+    Config_LoRaConfig_RegionCode_RU_D       = 512+9, 
+    Config_LoRaConfig_RegionCode_IN_D       = 512+10, 
+    Config_LoRaConfig_RegionCode_NZ865_D    = 512+11, 
+    Config_LoRaConfig_RegionCode_TH_D       = 512+12
+//eaosn add above...
+
 } Config_LoRaConfig_RegionCode;
 
 typedef enum _Config_LoRaConfig_ModemPreset { 

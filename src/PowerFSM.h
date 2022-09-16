@@ -22,6 +22,12 @@
 #define EVENT_SHUTDOWN 16 //force a full shutdown now (not just sleep)
 #define EVENT_INPUT 17 // input broker wants something, we need to wake up and enable screen
 
+//Eason add below...
+#define EVENT_DEBUG_ENTRY 20
+#define EVENT_DEBUG_LEAVE 21
+extern State stateDEBUG, stateBOOT;
+//Eason add above...
+
 extern Fsm powerFSM;
 extern State statePOWER, stateSERIAL;
 

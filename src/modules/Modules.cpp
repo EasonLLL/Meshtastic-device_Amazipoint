@@ -19,6 +19,8 @@
 #endif
 #ifdef ARCH_ESP32
 #include "modules/esp32/RangeTestModule.h"
+#include "modules/esp32/SendRoutineMessageModule.h" //eason add..
+
 #include "modules/esp32/SerialModule.h"
 #include "modules/esp32/StoreForwardModule.h"
 #endif
@@ -73,6 +75,7 @@ void setupModules()
     storeForwardModule = new StoreForwardModule();
 
     new RangeTestModule();
+    new SendRoutineMessageModule(); //eason add..
 #elif defined(ARCH_NRF52)
 new ExternalNotificationModule();
 #endif

@@ -98,8 +98,93 @@ const RegionInfo regions[] = {
     /*
         This needs to be last. Same as US.
     */
-    RDEF(Unset, 902.0f, 928.0f, 100, 0, 30, true, false)
+    RDEF(Unset, 902.0f, 928.0f, 100, 0, 30, true, false),
 
+
+
+//Eason add below...
+    /*
+        https://link.springer.com/content/pdf/bbm%3A978-1-4842-4357-2%2F1.pdf
+        https://www.thethingsnetwork.org/docs/lorawan/regional-parameters/
+    */
+    RDEF(US_D, 902.0f, 928.0f, 100, 0, 30, true, false),
+
+    /*
+        https://lora-alliance.org/wp-content/uploads/2020/11/lorawan_regional_parameters_v1.0.3reva_0.pdf
+     */
+    RDEF(EU433_D, 433.0f, 434.0f, 10, 0, 12, true, false),
+
+    /*
+        https://www.thethingsnetwork.org/docs/lorawan/duty-cycle/
+        https://www.thethingsnetwork.org/docs/lorawan/regional-parameters/
+        https://www.legislation.gov.uk/uksi/1999/930/schedule/6/part/III/made/data.xht?view=snippet&wrap=true
+
+        audio_permitted = false per regulation
+
+        Special Note:
+        The link above describes LoRaWAN's band plan, stating a power limit of 16 dBm. This is their own suggested specification,
+        we do not need to follow it. The European Union regulations clearly state that the power limit for this frequency range is 500 mW, or 27 dBm.
+        It also states that we can use interference avoidance and spectrum access techniques to avoid a duty cycle.
+        (Please refer to section 4.21 in the following document)
+        https://ec.europa.eu/growth/tools-databases/tris/index.cfm/ro/search/?trisaction=search.detail&year=2021&num=528&dLang=EN
+     */
+    RDEF(EU868_D, 869.4f, 869.65f, 10, 0, 27, false, false),
+
+    /*
+        https://lora-alliance.org/wp-content/uploads/2020/11/lorawan_regional_parameters_v1.0.3reva_0.pdf
+     */
+    RDEF(CN_D, 470.0f, 510.0f, 100, 0, 19, true, false),
+
+    /*
+        https://lora-alliance.org/wp-content/uploads/2020/11/lorawan_regional_parameters_v1.0.3reva_0.pdf
+     */
+    RDEF(JP_D, 920.8f, 927.8f, 100, 0, 16, true, false),
+
+    /*
+        https://www.iot.org.au/wp/wp-content/uploads/2016/12/IoTSpectrumFactSheet.pdf
+        https://iotalliance.org.nz/wp-content/uploads/sites/4/2019/05/IoT-Spectrum-in-NZ-Briefing-Paper.pdf
+     */
+    RDEF(ANZ_D, 915.0f, 928.0f, 100, 0, 30, true, false),
+
+    /*
+        https://digital.gov.ru/uploaded/files/prilozhenie-12-k-reshenyu-gkrch-18-46-03-1.pdf
+
+        Note:
+            - We do LBT, so 100% is allowed.
+     */
+    RDEF(RU_D, 868.7f, 869.2f, 100, 0, 20, true, false),
+
+    /*
+        ???
+     */
+    RDEF(KR_D, 920.0f, 923.0f, 100, 0, 0, true, false),
+
+    /*
+        ???
+     */
+    RDEF(TW_D, 920.0f, 925.0f, 100, 0, 0, true, false),
+
+    /*
+        https://lora-alliance.org/wp-content/uploads/2020/11/lorawan_regional_parameters_v1.0.3reva_0.pdf
+     */
+    RDEF(IN_D, 865.0f, 867.0f, 100, 0, 30, true, false),
+
+    /*
+         https://rrf.rsm.govt.nz/smart-web/smart/page/-smart/domain/licence/LicenceSummary.wdk?id=219752
+         https://iotalliance.org.nz/wp-content/uploads/sites/4/2019/05/IoT-Spectrum-in-NZ-Briefing-Paper.pdf
+      */
+    RDEF(NZ865_D, 864.0f, 868.0f, 100, 0, 0, true, false),
+
+    /*
+       https://lora-alliance.org/wp-content/uploads/2020/11/lorawan_regional_parameters_v1.0.3reva_0.pdf
+    */
+    RDEF(TH_D, 920.0f, 925.0f, 100, 0, 16, true, false),
+
+    /*
+        This needs to be last. Same as US.
+    */
+    RDEF(Unset_D, 902.0f, 928.0f, 100, 0, 30, true, false)
+    //Eason add above...
 };
 
 const RegionInfo *myRegion;
@@ -111,6 +196,20 @@ void initRegion()
         ;
     myRegion = r;
     DEBUG_MSG("Wanted region %d, using %s\n", config.lora.region, r->name);
+
+//Eason add below...
+    //if region code > 512, than entry debug mode
+    if (myRegion->code >= 512)
+    {
+        Device_debug_mode_enable_f = true;
+        DEBUG_MSG("initRegionDEBUG ENTRY\n");
+    }
+    else
+    {
+        Device_debug_mode_enable_f = false;
+        DEBUG_MSG("initRegionDEBUG LEAVE\n");
+    }
+//Eason add above...
 }
 
 /**
