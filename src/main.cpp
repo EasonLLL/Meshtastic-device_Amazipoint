@@ -86,6 +86,29 @@ uint32_t serialSinceMsec;
 
 bool axp192_found;
 
+//seger add below..
+void    setBuzzerOn(bool Buz_ON);
+
+uint8_t Buzzer_count_d1=0;   //eason add..
+//extern  bool bluetoothOn;
+extern  void update_fuel_LED(void);   
+//seger add above..
+
+
+uint32_t timeLastPowered = 0;
+
+#if HAS_BUTTON
+bool ButtonThread::shutdown_on_long_stop = false;
+#endif
+
+static Periodic *ledPeriodic;
+static OSThread *powerFSMthread, *buttonThread;
+#if HAS_BUTTON
+uint32_t ButtonThread::longPressTime = 0;
+#endif
+
+RadioInterface *rIf = NULL;
+
 // Array map of sensor types (as array index) and i2c address as value we'll find in the i2c scan
 uint8_t nodeTelemetrySensorsMap[7] = { 0, 0, 0, 0, 0, 0, 0 };
 
@@ -112,6 +135,22 @@ const char *getDeviceName()
 static int32_t ledBlinker()
 {
     static bool ledOn;
+    //seger add below..
+    static bool BuzzerON;   
+    //..........................
+    //if(bluetoothOn)
+    {
+        update_fuel_LED();
+    }
+    //..........................
+    if(Buzzer_toggle_f) 
+    {
+        Buzzer_count_d1 ++;
+        if(Buzzer_count_d1 == 2){ BuzzerON ^= 1; Buzzer_count_d1 = 0;}
+        setBuzzerOn(BuzzerON);     
+    }
+    else {digitalWrite(BUZZER_OUT, 0);  }            //turn off
+    //seger add above..
     ledOn ^= 1;
 
     setLed(ledOn);
@@ -120,19 +159,6 @@ static int32_t ledBlinker()
     return powerStatus->getIsCharging() ? 1000 : (ledOn ? 1 : 1000);
 }
 
-uint32_t timeLastPowered = 0;
-
-#if HAS_BUTTON
-bool ButtonThread::shutdown_on_long_stop = false;
-#endif
-
-static Periodic *ledPeriodic;
-static OSThread *powerFSMthread, *buttonThread;
-#if HAS_BUTTON
-uint32_t ButtonThread::longPressTime = 0;
-#endif
-
-RadioInterface *rIf = NULL;
 
 /**
  * Some platforms (nrf52) might provide an alterate version that supresses calling delay from sleep.
@@ -144,6 +170,20 @@ __attribute__((weak, noinline)) bool loopCanSleep()
 
 void setup()
 {
+    //WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
+// seger mark add below..
+    pinMode(BUZZER_OUT, OUTPUT);
+    pinMode(Laser_OUT, OUTPUT);
+    //pinMode(LoRa_Power_SW, OUTPUT);   // move to power.c
+    //pinMode(SX1262_TXEN, OUTPUT);
+    //pinMode(SX1262_RXEN, OUTPUT);   
+    digitalWrite(BUZZER_OUT, 0);        // turn off BUZZER
+    digitalWrite(Laser_OUT, 0);         // turn off Laser
+    //digitalWrite(LoRa_Power_SW, 1);     // turn oN LoRa power // move to power.c
+    //digitalWrite(SX1262_TXEN, 0);
+    //digitalWrite(SX1262_RXEN, 0);  // turn on RX
+// seger mark add above..
+
     concurrency::hasBeenSetup = true;
 
 #ifdef SEGGER_STDOUT_CH
@@ -490,4 +530,9 @@ void loop()
         mainDelay.delay(delayMsec);
     }
     // if (didWake) DEBUG_MSG("wake!\n");
+}
+
+void    setBuzzerOn(bool Buz_ON)
+{
+    digitalWrite(BUZZER_OUT, Buz_ON); // seger add..  turn on BUZZER
 }

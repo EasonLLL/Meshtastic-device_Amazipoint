@@ -76,8 +76,8 @@ class RadioLibInterface : public RadioInterface, protected concurrency::Notified
      * for a long time.
      */
     const uint8_t syncWord = 0x2b;
-    
-    float currentLimit = 100;   // 100mA OCP - Should be acceptable for RFM95/SX127x chipset.  
+
+    float currentLimit = 140;     // FIXME, seger modify
 
     LockingModule module; // The HW interface to the radio
 

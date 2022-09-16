@@ -40,6 +40,16 @@ class GPS : private concurrency::OSThread
     /** If !NULL we will use this serial port to construct our GPS */
     static HardwareSerial *_serial_gps;
 
+    //seger..
+    /** If !0 we will attempt to connect to the GPS over I2C */
+    static uint8_t i2cAddress;
+    int32_t latitude = 0, longitude = 0; // as an int mult by 1e-7 to get value as double
+    int32_t altitude = 0;
+    //int32_t latitude = 249744500, longitude = 1215308000; // as an int mult by 1e-7 to get value as double
+    //int32_t altitude = 30;
+    uint32_t dop = 0;     // Diminution of position; PDOP where possible (UBlox), HDOP otherwise (TinyGPS) in 10^2 units (needs
+                          // scaling before use)
+    //seger..
     Position p = Position_init_default;
 
     GPS() : concurrency::OSThread("GPS") {}
@@ -70,6 +80,16 @@ class GPS : private concurrency::OSThread
      * Or set to false, to disallow any sort of waking
      * */
     void forceWake(bool on);
+    
+    //seger add below..
+    virtual void temp_powerSave(bool power_save);
+    virtual void Power_save(bool power_save)=0; 
+    virtual uint8_t GetProtocolVersionHigh()=0;
+    virtual bool Power_Backup_mem(uint32_t duration_time)=0;
+    //void setAwake(bool on); //seger..
+    //seger add above..
+
+
 
     // Some GPS modules (ublock) require factory reset
     virtual bool factoryReset() { return true; }

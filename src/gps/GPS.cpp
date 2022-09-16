@@ -5,6 +5,21 @@
 #include "sleep.h"
 #include <assert.h>
 
+//seger add below..
+#ifdef GPS_TX_PIN
+#include "UBloxGPS.h"
+UBloxGPS *By_ublox = NULL;   //seger add..
+#endif
+uint32_t sleepTime= 1 * 60 * 1000;  //begin = 1 min
+extern bool Freeze_GPS_runOnce_f;
+bool Toggle_f = true;
+#ifdef GPS_I2C_ADDRESS
+uint8_t GPS::i2cAddress = GPS_I2C_ADDRESS;
+#else
+uint8_t GPS::i2cAddress = 0;
+#endif
+//seger add above.. 
+
 // If we have a serial GPS port it will not be null
 #ifdef GPS_SERIAL_NUM
 HardwareSerial _serial_gps_real(GPS_SERIAL_NUM);
@@ -17,6 +32,7 @@ HardwareSerial *GPS::_serial_gps = NULL;
 #endif
 
 GPS *gps;
+//UBloxGPS *By_ublox;   //seger add..
 
 /// Multiple GPS instances might use the same serial port (in sequence), but we can
 /// only init that port once.
@@ -171,12 +187,13 @@ bool GPS::setup()
     digitalWrite(PIN_GPS_RESET, 0);
 #endif
 
-    setAwake(true); // Wake GPS power before doing any init
+    //seger.. setAwake(true); // Wake GPS power before doing any init
     bool ok = setupGPS();
 
     if (ok) {
         notifySleepObserver.observe(&notifySleep);
         notifyDeepSleepObserver.observe(&notifyDeepSleep);
+        setAwake(true); // Wake GPS power before doing any init     //seger add..
     }
 
     return ok;
@@ -275,7 +292,7 @@ uint32_t GPS::getWakeTime() const
     if (t == 0)
         t = (config.device.role == Config_DeviceConfig_Role_Router)
                 ? 5 * 60
-                : 15 * 60; // Allow up to 15 mins for each attempt (probably will be much
+                : 10 * 60; // Allow up to 15 mins for each attempt (probably will be much ...eason modify...
                            // less if we can find sats) or less if a router
 
     t *= 1000; // msecs
@@ -338,7 +355,8 @@ int32_t GPS::runOnce()
     // If we are overdue for an update, turn on the GPS and at least publish the current status
     uint32_t now = millis();
 
-    auto sleepTime = getSleepTime();
+    //auto sleepTime = getSleepTime();  //.. seger mark..
+    //DEBUG_MSG("seger: sleepTime =  %d\n", sleepTime);    //seger add.. sleep time begin = 1 min = 60000ms
     if (!isAwake && sleepTime != UINT32_MAX && (now - lastSleepStartMsec) > sleepTime) {
         // We now want to be awake - so wake up the GPS
         setAwake(true);
@@ -360,10 +378,19 @@ int32_t GPS::runOnce()
         }
 
         bool gotLoc = lookForLocation();
+        //DEBUG_MSG("gotLoc =  %d\n", gotLoc);
+        //DEBUG_MSG("hasValidLocation =  %d\n", hasValidLocation);
         if (gotLoc && !hasValidLocation) { // declare that we have location ASAP
             DEBUG_MSG("hasValidLocation RISING EDGE\n");
             hasValidLocation = true;
             shouldPublish = true;
+            //seger add below..
+            //while(Serial1.read()!= -1){}
+            //uint8_t version_H = GetProtocolVersionHigh();   //seger add..
+            //DEBUG_MSG("UBLOX version_H = %d\n", version_H); //seger add..
+            //Power_save(true);
+            //DEBUG_MSG("UBLOX enter Power Saveing!!\n");
+            //seger add above..
         }
 
         // We've been awake too long - force sleep
@@ -372,9 +399,15 @@ int32_t GPS::runOnce()
         bool tooLong = wakeTime != UINT32_MAX && (now - lastWakeStartMsec) > wakeTime;
 
         // Once we get a location we no longer desperately want an update
+       
+        //mod debug by Eason 2022/09/06
+        // DEBUG_MSG("now %d\n", now);
+        // DEBUG_MSG("lastWakeStartMsec %d\n", lastWakeStartMsec);       
+        // DEBUG_MSG("wakeTime %d\n", wakeTime);
         // DEBUG_MSG("gotLoc %d, tooLong %d, gotTime %d\n", gotLoc, tooLong, gotTime);
         if ((gotLoc && gotTime) || tooLong) {
-
+			//eason mark...//sleepTime= 5 * 60 * 1000;  //seger add.. cotinue sleep = 5 min
+            sleepTime= 1 * 60 * 1000;  //eason mod.. cotinue sleep = 1 min
             if (tooLong) {
                 // we didn't get a location during this ack window, therefore declare loss of lock
                 if (hasValidLocation) {
@@ -382,6 +415,8 @@ int32_t GPS::runOnce()
                 }
                 p = Position_init_default;
                 hasValidLocation = false;
+				//eason mark...//sleepTime= 20 * 60 * 1000;  //seger add.. cotinue sleep = 20 min
+                sleepTime= 2 * 60 * 1000;  //eason mod.. cotinue sleep = 2 min
             }
 
             setAwake(false);
@@ -412,11 +447,28 @@ void GPS::forceWake(bool on)
     }
 }
 
+//seger add below..
+void GPS::temp_powerSave(bool power_save)
+{
+    Power_save(power_save);
+
+}
+
+
+//uint8_t GPS::getProtocolVersionHigh()
+//{
+//    //return (By_ublox->GetProtocolVersionHigh());
+//    return 0;
+//
+//}
+
+//seger add above..
+
 /// Prepare the GPS for the cpu entering deep or light sleep, expect to be gone for at least 100s of msecs
 int GPS::prepareSleep(void *unused)
 {
     DEBUG_MSG("GPS prepare sleep!\n");
-    forceWake(false);
+    //forceWake(false);    seger mark...
 
     return 0;
 }
@@ -427,12 +479,13 @@ int GPS::prepareDeepSleep(void *unused)
     DEBUG_MSG("GPS deep sleep!\n");
 
     // For deep sleep we also want abandon any lock attempts (because we want minimum power)
-    setAwake(false);
+    //seger.. setAwake(false);
 
     return 0;
 }
 
 #if HAS_GPS
+#include "UBloxGPS.h" //Eason add
 #include "NMEAGPS.h"
 #endif
 
@@ -445,6 +498,22 @@ GPS *createGps()
     if (!config.position.gps_disabled) {
 #ifdef GPS_ALTITUDE_HAE
         DEBUG_MSG("Using HAE altitude model\n");
+		// Init GPS - first try ublox
+	    UBloxGPS *ublox = new UBloxGPS();
+	
+	    if (!ublox->setup()) {
+	        DEBUG_MSG("ERROR: No UBLOX GPS found\n");
+	        delete ublox;
+	        ublox = NULL;
+	    } else {
+	        //seger add below..
+	        //uint8_t version_H = ublox->GetProtocolVersionHigh();
+	        //DEBUG_MSG("UBLOX version_H = %d\n", version_H);
+	        //ublox->Power_save(false);
+	        By_ublox = ublox;
+	        //seger add above..
+	        return ublox;
+	    }
 #else
         DEBUG_MSG("Using MSL altitude model\n");
 #endif

@@ -23,7 +23,8 @@ void wakeOnIrq(int irq, int mode)
         },
         FALLING);
 }
-
+uint8_t Laser_toggle_f; 
+uint8_t Buzzer_toggle_f;
 class ButtonThread : public concurrency::OSThread
 {
 // Prepare for button presses
@@ -37,13 +38,16 @@ class ButtonThread : public concurrency::OSThread
     OneButton userButtonTouch;
 #endif
     static bool shutdown_on_long_stop;
-
+    
   public:
+     
     static uint32_t longPressTime;
-
+       
     // callback returns the period for the next callback invocation (or 0 if we should no longer be called)
     ButtonThread() : OSThread("Button")
     {
+        Laser_toggle_f = 0;
+        Buzzer_toggle_f = 0;
 #ifdef BUTTON_PIN
         userButton = OneButton(BUTTON_PIN, true, true);
 #ifdef INPUT_PULLUP_SENSE
@@ -104,6 +108,7 @@ class ButtonThread : public concurrency::OSThread
     }
 
   private:
+   
     static void touchPressed()
     {
         screen->forceDisplay();
@@ -113,6 +118,14 @@ class ButtonThread : public concurrency::OSThread
     static void userButtonPressed()
     {
         // DEBUG_MSG("press!\n");
+        //seger add below..
+        digitalWrite(BUZZER_OUT, 0);    // turn buzzer off
+        if(Laser_toggle_f == 0)
+            {digitalWrite(Laser_OUT, 1);  Laser_toggle_f = 1; }
+        else
+            {digitalWrite(Laser_OUT, 0);  Laser_toggle_f = 0; }
+        Buzzer_toggle_f = 0;
+        //seger add above.. 
 #ifdef BUTTON_PIN
         if ((BUTTON_PIN != moduleConfig.canned_message.inputbroker_pin_press) ||
             !moduleConfig.canned_message.enabled) {
@@ -123,6 +136,12 @@ class ButtonThread : public concurrency::OSThread
     static void userButtonPressedLong()
     {
         // DEBUG_MSG("Long press!\n");
+        //seger add below..       
+        //digitalWrite(BUZZER_OUT, 1);
+        Buzzer_toggle_f = 1;        // set buzzzer on
+        digitalWrite(Laser_OUT, 1); // set laser on
+        //seger add above.. 
+
 #ifdef ARCH_ESP32
         screen->adjustBrightness();
 #endif
@@ -159,6 +178,13 @@ class ButtonThread : public concurrency::OSThread
 
     static void userButtonDoublePressed()
     {
+        //seger mark.. #ifndef NO_ESP32
+        //seger mark.. disablePin();
+        //seger mark.. #endif
+        //digitalWrite(BUZZER_OUT, 1); // seger add..  turn on BUZZER
+        if( Buzzer_toggle_f == 0){Buzzer_toggle_f = 1;}
+        else{Buzzer_toggle_f = 0;}
+        //seger add above.. 
 #ifdef ARCH_ESP32
         disablePin();
 #elif defined(USE_EINK)
@@ -168,6 +194,7 @@ class ButtonThread : public concurrency::OSThread
 
     static void userButtonMultiPressed()
     {
+        
 #ifdef ARCH_ESP32
         clearNVS();
 #endif

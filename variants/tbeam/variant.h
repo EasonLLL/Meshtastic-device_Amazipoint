@@ -3,12 +3,23 @@
 #define I2C_SDA 21
 #define I2C_SCL 22
 
-#define BUTTON_PIN 38     // The middle button GPIO on the T-Beam
+//eason mark..#define BUTTON_PIN 38     // The middle button GPIO on the T-Beam
+#define BUTTON_PIN 39     // The middle button GPIO on the T-Beam   //eason modify
+#define BUTTON_PIN2 15    // seger add for middle button v1.2
 //#define BUTTON_PIN_ALT 13 // Alternate GPIO for an external button if needed. Does anyone use this? It is not documented anywhere.
 #define EXT_NOTIFY_OUT 13 // Default pin to use for Ext Notify Module.
 
 #define LED_INVERTED 1
 #define LED_PIN 4 // Newer tbeams (1.1) have an extra led on GPIO4
+
+//seger mark below..
+#define BUZZER_OUT 25   
+//#define PIN_BUZZER 25
+#define Laser_OUT 14    
+#define SX1262_TXEN 2     //seger modify for v1.2
+#define SX1262_RXEN 0     //seger modify for v1.2
+#define LoRa_Power_SW 13  //seger modify for v1.2
+//seger mark above..
 
 // TTGO uses a common pinout for their SX1262 vs RF95 modules - both can be enabled and we will probe at runtime for RF95 and if
 // not found then probe for SX1262
@@ -19,13 +30,15 @@
 #define LORA_DIO0 26 // a No connect on the SX1262 module
 #define LORA_RESET 23
 #define LORA_DIO1 33 // SX1262 IRQ
-#define LORA_DIO2 32 // SX1262 BUSY
+//seger mark.. #define LORA_DIO2 32 // SX1262 BUSY
+#define LORA_DIO2 26 // SX1262 BUSY // eason modify
 #define LORA_DIO3    // Not connected on PCB, but internally on the TTGO SX1262, if DIO3 is high the TXCO is enabled
 
 #ifdef USE_SX1262
 #define SX126X_CS RF95_NSS // FIXME - we really should define LORA_CS instead
 #define SX126X_DIO1 LORA_DIO1
-#define SX126X_BUSY LORA_DIO2
+//seger mark.. #define SX126X_BUSY LORA_DIO2
+#define SX126X_BUSY 32  //eason modify
 #define SX126X_RESET LORA_RESET
 #define SX126X_E22 // Not really an E22 but TTGO seems to be trying to clone that
 // Internally the TTGO module hooks the SX1262-DIO2 in to control the TX/RX switch (which is the default for the sx1262interface

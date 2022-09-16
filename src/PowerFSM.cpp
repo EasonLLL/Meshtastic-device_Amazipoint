@@ -8,6 +8,20 @@
 #include "sleep.h"
 #include "target_specific.h"
 
+//seger add below..
+#ifdef TBEAM_V10
+#include "axp20x.h"
+extern AXP20X_Class axp;
+#endif
+
+#ifdef GPS_TX_PIN
+#include "UBloxGPS.h"
+extern UBloxGPS *By_ublox;   //seger add..
+#endif
+bool Freeze_GPS_runOnce_f = false;
+
+//seger add above..
+
 /// Should we behave as if we have AC power now?
 static bool isPowered()
 {
@@ -52,6 +66,7 @@ static uint32_t secsSlept;
 static void lsEnter()
 {
     DEBUG_MSG("lsEnter begin, ls_secs=%u\n", config.power.ls_secs > 0 ? config.power.ls_secs : default_ls_secs);
+	config.power.ls_secs = 3600;   //seger ADD.. sleep for one hour.
     screen->setOn(false);
     secsSlept = 0; // How long have we been sleeping this time
 
@@ -67,11 +82,37 @@ static void lsIdle()
     // Do we have more sleeping to do?
     if (secsSlept < config.power.ls_secs ? config.power.ls_secs : default_ls_secs) {
         // Briefly come out of sleep long enough to blink the led once every few seconds
-        uint32_t sleepTime = 30;
-
+        //eason mark.. uint32_t sleepTime = 30;
+		uint32_t sleepTime = 15;        //seger modify..
         // If some other service would stall sleep, don't let sleep happen yet
         if (doPreflightSleep()) {
             setLed(false); // Never leave led on while in light sleep
+            //seger add below..
+            axp.setGPIOMode(AXP_GPIO_0,AXP_IO_FLOATING_MODE);  
+            axp.setGPIOMode(AXP_GPIO_1,AXP_IO_FLOATING_MODE);  
+            axp.setGPIOMode(AXP_GPIO_2,AXP_IO_FLOATING_MODE);
+            axp.gpioWrite(AXP_GPIO_3,1);
+            axp.gpioWrite(AXP_GPIO_4,1);  
+            
+            /*
+            if(Freeze_GPS_runOnce_f == false)
+            {
+                Freeze_GPS_runOnce_f = true;
+                //gps->setAwake(0);
+                //gps->Power_Backup_mem(0);
+                DEBUG_MSG("seger: GPS-> Sleep!!!\n");
+            }
+            else
+            {
+                Freeze_GPS_runOnce_f = false;
+                //gps->setAwake(1);
+                //gps->Power_Backup_mem(1);
+                DEBUG_MSG("seger: GPS-> Wake!!!\n");
+            }
+            */
+            //seger add above..   
+            DEBUG_MSG("reEnter doLightSleep for 15 sec!\n");    //seger add..
+
             esp_sleep_source_t wakeCause2 = doLightSleep(sleepTime * 1000LL);
 
             switch (wakeCause2) {

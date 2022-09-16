@@ -53,4 +53,9 @@ class NMEAGPS : public GPS
     virtual bool hasLock() override;
 
     virtual bool hasFlow() override;
+    
+    //seger add below..
+    virtual uint8_t GetProtocolVersionHigh();
+    virtual void Power_save(bool power_save); 
+    virtual bool Power_Backup_mem(uint32_t duration_time);
 };

@@ -38,6 +38,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "sleep.h"
 #include "target_specific.h"
 #include "utils.h"
+//seger add below..
+#include "power.h"           
+#include "axp20x.h"
+void     update_fuel_LED(void);      
+extern   AXP20X_Class axp;
+//seger add above..         
 
 #ifdef ARCH_ESP32
 #include "esp_task_wdt.h"
@@ -979,6 +985,8 @@ static uint32_t lastScreenTransition;
 
 int32_t Screen::runOnce()
 {
+    update_fuel_LED();      //seger add..
+
     // If we don't have a screen, don't ever spend any CPU for us.
     if (!useDisplay) {
         enabled = false;
@@ -1689,4 +1697,59 @@ int Screen::handleUIFrameEvent(const UIFrameEvent *event)
 
 } // namespace graphics
 
+//seger add below.. for display fuel gauge
+void update_fuel_LED(void)
+{
+    int32_t battery_level = powerStatus->getBatteryChargePercent();
+    if(battery_level >= 95)
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_OUTPUT_LOW_MODE);
+        axp.gpioWrite(AXP_GPIO_3,0);
+        axp.gpioWrite(AXP_GPIO_4,0);
+    }
+    else if(battery_level >= 75)
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_OUTPUT_LOW_MODE);
+        axp.gpioWrite(AXP_GPIO_3,0);
+        axp.gpioWrite(AXP_GPIO_4,1);
+    }
+    else if(battery_level >= 55)
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_OUTPUT_LOW_MODE);
+        axp.gpioWrite(AXP_GPIO_3,1);
+        axp.gpioWrite(AXP_GPIO_4,1);
+    }
+    else if(battery_level >= 35)
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_FLOATING_MODE);
+        axp.gpioWrite(AXP_GPIO_3,1);
+        axp.gpioWrite(AXP_GPIO_4,1);
+    }
+    else if(battery_level >= 15)
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_FLOATING_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_FLOATING_MODE);
+        axp.gpioWrite(AXP_GPIO_3,1);
+        axp.gpioWrite(AXP_GPIO_4,1);
+    }
+    else
+    {
+        axp.setGPIOMode(AXP_GPIO_0,AXP_IO_FLOATING_MODE);  
+        axp.setGPIOMode(AXP_GPIO_1,AXP_IO_FLOATING_MODE);  
+        axp.setGPIOMode(AXP_GPIO_2,AXP_IO_FLOATING_MODE);
+        axp.gpioWrite(AXP_GPIO_3,1);
+        axp.gpioWrite(AXP_GPIO_4,1);
+    }
+    //seger add above..
+}
 #endif // HAS_SCREEN
+    
