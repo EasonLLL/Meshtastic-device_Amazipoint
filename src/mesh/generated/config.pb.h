@@ -80,21 +80,21 @@ typedef enum _Config_LoRaConfig_RegionCode {
     Config_LoRaConfig_RegionCode_IN     = 10, 
     Config_LoRaConfig_RegionCode_NZ865  = 11, 
     Config_LoRaConfig_RegionCode_TH     = 12, 
-//eaosn add below...
+//Eaosn add below...
     Config_LoRaConfig_RegionCode_Unset_D    = 512, 
-    Config_LoRaConfig_RegionCode_US_D       = 512+1, 
-    Config_LoRaConfig_RegionCode_EU433_D    = 512+2, 
-    Config_LoRaConfig_RegionCode_EU868_D    = 512+3, 
-    Config_LoRaConfig_RegionCode_CN_D       = 512+4, 
-    Config_LoRaConfig_RegionCode_JP_D       = 512+5, 
-    Config_LoRaConfig_RegionCode_ANZ_D      = 512+6, 
-    Config_LoRaConfig_RegionCode_KR_D       = 512+7, 
-    Config_LoRaConfig_RegionCode_TW_D       = 512+8, 
-    Config_LoRaConfig_RegionCode_RU_D       = 512+9, 
-    Config_LoRaConfig_RegionCode_IN_D       = 512+10, 
-    Config_LoRaConfig_RegionCode_NZ865_D    = 512+11, 
-    Config_LoRaConfig_RegionCode_TH_D       = 512+12
-//eaosn add above...
+    Config_LoRaConfig_RegionCode_US_D       = 513, 
+    Config_LoRaConfig_RegionCode_EU433_D    = 514, 
+    Config_LoRaConfig_RegionCode_EU868_D    = 515, 
+    Config_LoRaConfig_RegionCode_CN_D       = 516, 
+    Config_LoRaConfig_RegionCode_JP_D       = 517, 
+    Config_LoRaConfig_RegionCode_ANZ_D      = 518, 
+    Config_LoRaConfig_RegionCode_KR_D       = 519, 
+    Config_LoRaConfig_RegionCode_TW_D       = 520, 
+    Config_LoRaConfig_RegionCode_RU_D       = 521, 
+    Config_LoRaConfig_RegionCode_IN_D       = 522, 
+    Config_LoRaConfig_RegionCode_NZ865_D    = 523, 
+    Config_LoRaConfig_RegionCode_TH_D       = 524
+//Eaosn add above...
 
 } Config_LoRaConfig_RegionCode;
 
@@ -215,8 +215,10 @@ typedef struct _Config {
 #define _Config_DisplayConfig_GpsCoordinateFormat_ARRAYSIZE ((Config_DisplayConfig_GpsCoordinateFormat)(Config_DisplayConfig_GpsCoordinateFormat_GpsFormatOSGR+1))
 
 #define _Config_LoRaConfig_RegionCode_MIN Config_LoRaConfig_RegionCode_Unset
-#define _Config_LoRaConfig_RegionCode_MAX Config_LoRaConfig_RegionCode_TH
-#define _Config_LoRaConfig_RegionCode_ARRAYSIZE ((Config_LoRaConfig_RegionCode)(Config_LoRaConfig_RegionCode_TH+1))
+//Eason mark... #define _Config_LoRaConfig_RegionCode_MAX Config_LoRaConfig_RegionCode_TH
+//Eason mark... #define _Config_LoRaConfig_RegionCode_ARRAYSIZE ((Config_LoRaConfig_RegionCode)(Config_LoRaConfig_RegionCode_TH+1))
+#define _Config_LoRaConfig_RegionCode_MAX Config_LoRaConfig_RegionCode_TH_D //Eason add...
+#define _Config_LoRaConfig_RegionCode_ARRAYSIZE ((Config_LoRaConfig_RegionCode)(Config_LoRaConfig_RegionCode_TH_D+1)) //Eason add...
 
 #define _Config_LoRaConfig_ModemPreset_MIN Config_LoRaConfig_ModemPreset_LongFast
 #define _Config_LoRaConfig_ModemPreset_MAX Config_LoRaConfig_ModemPreset_ShortFast

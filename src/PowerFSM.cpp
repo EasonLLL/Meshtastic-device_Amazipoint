@@ -166,10 +166,12 @@ static void lsIdle()
 
 static void lsExit()
 {
-    DEBUG_MSG("Exit state: LS\n");
-    // setGPSPower(true); // restore GPS power
-    if (gps)
-        gps->forceWake(true);
+    //Eason mark below...
+    // DEBUG_MSG("Exit state: LS\n");
+    // // setGPSPower(true); // restore GPS power
+    // if (gps)
+    //     gps->forceWake(true);
+    //Eason mark above...
 }
 
 static void nbEnter()

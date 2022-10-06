@@ -81,7 +81,7 @@ void setLed(bool ledOn)
 #ifdef HAS_AXP192
     if (axp192_found) {
         // blink the axp led
-        axp.setChgLEDMode(ledOn ? AXP20X_LED_LOW_LEVEL : AXP20X_LED_OFF);
+        //Eason mark.. axp.setChgLEDMode(ledOn ? AXP20X_LED_LOW_LEVEL : AXP20X_LED_OFF);
     }
 #endif
 }
@@ -90,10 +90,10 @@ void setGPSPower(bool on)
 {
     DEBUG_MSG("Setting GPS power=%d\n", on);
 
-#ifdef HAS_AXP192
-    if (axp192_found)
-        axp.setPowerOutPut(AXP192_LDO3, on ? AXP202_ON : AXP202_OFF); // GPS main power
-#endif
+//Eason mark..#ifdef HAS_AXP192
+//Eason mark..    if (axp192_found)
+//Eason mark..        axp.setPowerOutPut(AXP192_LDO3, on ? AXP202_ON : AXP202_OFF); // GPS main power
+//Eason mark..#endif
 }
 
 // Perform power on init that we do on each wake from deep sleep

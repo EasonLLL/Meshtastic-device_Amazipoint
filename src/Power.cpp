@@ -8,6 +8,8 @@
 #include "buzz/buzz.h"
 
 #ifdef HAS_AXP192
+// FIXME. nasty hack cleanup how we load axp192
+#undef AXP192_SLAVE_ADDRESS //Eason add..
 #include "axp20x.h"
 
 AXP20X_Class axp;
@@ -375,7 +377,29 @@ bool Power::axp192Init()
             axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
             axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
             axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
-            axp.setDCDC1Voltage(3300); // for the OLED power
+            axp.setDCDC1Voltage(3300); // for the OLED power //seger modify for the Main power v1.2
+            
+            //seger add below..
+            axp.setDCDC3Voltage(3000); // seger modify for the GPS power V1.2
+            axp.setLDO2Voltage(1800);  // for E22-900M V1.1, LORA  
+            delay(100);                // delay for voltage settle down.
+            axp.setLDO3Voltage(3300);  // seger modify for E22-900M V1.2    
+            //delay(100);                // delay for voltage settle down.
+            axp.setGPIOMode(AXP_GPIO_0,AXP_IO_OUTPUT_LOW_MODE);  
+            axp.setGPIOMode(AXP_GPIO_1,AXP_IO_OUTPUT_LOW_MODE);  
+            axp.setGPIOMode(AXP_GPIO_2,AXP_IO_OUTPUT_LOW_MODE);  
+            axp.setGPIOMode(AXP_GPIO_3,AXP_IO_OPEN_DRAIN_OUTPUT_MODE);  
+            axp.setGPIOMode(AXP_GPIO_4,AXP_IO_OPEN_DRAIN_OUTPUT_MODE);  
+            //axp.setGPIOMode(AXP_GPIO_0,AXP_IO_FLOATING_MODE);  
+            //axp.setGPIOMode(AXP_GPIO_1,AXP_IO_FLOATING_MODE);  
+            //axp.setGPIOMode(AXP_GPIO_2,AXP_IO_FLOATING_MODE);  
+            axp.gpioWrite(AXP_GPIO_3,0);
+            axp.gpioWrite(AXP_GPIO_4,0);
+
+            pinMode(LoRa_Power_SW, OUTPUT);   // move to power.c
+            digitalWrite(LoRa_Power_SW, 1);     // turn oN LoRa power // move to power.c
+
+            //seger add above..
 
             DEBUG_MSG("DCDC1: %s\n", axp.isDCDC1Enable() ? "ENABLE" : "DISABLE");
             DEBUG_MSG("DCDC2: %s\n", axp.isDCDC2Enable() ? "ENABLE" : "DISABLE");
@@ -445,8 +469,8 @@ bool Power::axp192Init()
       //axp._writeByte(AXP202_VHTF_CHGSET, 1, &val); // Set temperature protection
 
       //not used
-      //val = 0x46;
-      //axp._writeByte(AXP202_OFF_CTL, 1, &val); // enable bat detection
+      //val = 0x46;     //seger add..
+      //axp._writeByte(AXP202_OFF_CTL, 1, &val); // enable bat detection    //seger add..
 #endif
             axp.debugCharging();
 

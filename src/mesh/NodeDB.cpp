@@ -75,6 +75,7 @@ NodeNum getFrom(const MeshPacket *p)
 
 bool NodeDB::resetRadioConfig()
 {
+    //DEBUG_MSG("[Eason] resetRadioConfig\n"); //Eason add for DEBUG
     bool didFactoryReset = false;
 
     radioGeneration++;
@@ -93,7 +94,7 @@ bool NodeDB::resetRadioConfig()
     channels.onConfigChanged();
 
     // temp hack for quicker testing
-    // devicestate.no_save = true;
+    //devicestate.no_save = true; //Eason modify...
     if (devicestate.no_save) {
         DEBUG_MSG("***** DEVELOPMENT MODE - DO NOT RELEASE *****\n");
 
@@ -160,7 +161,8 @@ void NodeDB::installDefaultConfig()
     config.has_wifi = true;
     config.has_bluetooth = true;
 
-    config.lora.region = Config_LoRaConfig_RegionCode_Unset;
+    //config.lora.region = Config_LoRaConfig_RegionCode_Unset; //Eason mark... 
+    config.lora.region = Config_LoRaConfig_RegionCode_TW; //Eason add for initial default region TW
     config.lora.modem_preset = Config_LoRaConfig_ModemPreset_LongFast;
     resetRadioConfig();
     strncpy(config.device.ntp_server, "0.pool.ntp.org", 32);
@@ -364,7 +366,7 @@ void NodeDB::loadFromDisk()
             DEBUG_MSG("Loaded saved devicestate version %d\n", devicestate.version);
         }
     }
-
+    //DEBUG_MSG("[Eason] Loaded From Disk\n"); //Eason add for DEBUG
     if (!loadProto(configFileName, LocalConfig_size, sizeof(LocalConfig), LocalConfig_fields, &config)) {
         installDefaultConfig(); // Our in RAM copy might now be corrupt
     } else {
@@ -456,6 +458,7 @@ void NodeDB::saveDeviceStateToDisk()
 
 void NodeDB::saveToDisk()
 {
+    //DEBUG_MSG("[Eason] saveToDisk\n"); //Eason add for DEBUG
     if (!devicestate.no_save) {
 #ifdef FSCom
         FSCom.mkdir("/prefs");

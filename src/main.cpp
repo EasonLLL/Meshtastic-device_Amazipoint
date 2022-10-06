@@ -89,7 +89,7 @@ bool axp192_found;
 //seger add below..
 void    setBuzzerOn(bool Buz_ON);
 
-uint8_t Buzzer_count_d1=0;   //eason add..
+uint8_t Buzzer_count_d=0;   //eason add..
 //extern  bool bluetoothOn;
 extern  void update_fuel_LED(void);   
 //seger add above..
@@ -152,8 +152,8 @@ static int32_t ledBlinker()
     //..........................
     if(Buzzer_toggle_f) 
     {
-        Buzzer_count_d1 ++;
-        if(Buzzer_count_d1 == 2){ BuzzerON ^= 1; Buzzer_count_d1 = 0;}
+        Buzzer_count_d ++;
+        if(Buzzer_count_d == 2){ BuzzerON ^= 1; Buzzer_count_d = 0;}
         setBuzzerOn(BuzzerON);     
     }
     else {digitalWrite(BUZZER_OUT, 0);  }            //turn off

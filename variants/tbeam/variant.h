@@ -7,7 +7,7 @@
 #define BUTTON_PIN 39     // The middle button GPIO on the T-Beam   //eason modify
 #define BUTTON_PIN2 15    // seger add for middle button v1.2
 //#define BUTTON_PIN_ALT 13 // Alternate GPIO for an external button if needed. Does anyone use this? It is not documented anywhere.
-#define EXT_NOTIFY_OUT 13 // Default pin to use for Ext Notify Module.
+//eason mark.. 20220930#define EXT_NOTIFY_OUT 13 // Default pin to use for Ext Notify Module.
 
 #define LED_INVERTED 1
 #define LED_PIN 4 // Newer tbeams (1.1) have an extra led on GPIO4
@@ -16,8 +16,8 @@
 #define BUZZER_OUT 25   
 //#define PIN_BUZZER 25
 #define Laser_OUT 14    
-#define SX1262_TXEN 2     //seger modify for v1.2
-#define SX1262_RXEN 0     //seger modify for v1.2
+#define SX126X_TXEN 2     //seger modify for v1.2
+#define SX126X_RXEN 0     //seger modify for v1.2
 #define LoRa_Power_SW 13  //seger modify for v1.2
 //seger mark above..
 
@@ -25,7 +25,7 @@
 // not found then probe for SX1262
 #define USE_RF95
 #define USE_SX1262
-#define USE_SX1268
+//#define USE_SX1268  //Eason mark...
 
 #define LORA_DIO0 26 // a No connect on the SX1262 module
 #define LORA_RESET 23
@@ -48,4 +48,6 @@
 // Leave undefined to disable our PMU IRQ handler.  DO NOT ENABLE THIS because the pmuirq can cause sperious interrupts
 // and waking from light sleep
 // #define PMU_IRQ 35
+
+//#define AXP192_SLAVE_ADDRESS 0x34   //Eason add...
 #define HAS_AXP192

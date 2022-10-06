@@ -80,7 +80,7 @@
 //
 // Standard definitions for ESP32 targets
 //
-
+//Eason mark...#define HAS_WIFI //Eason add...
 #define GPS_SERIAL_NUM 1
 #ifndef GPS_RX_PIN
 #define GPS_RX_PIN 34

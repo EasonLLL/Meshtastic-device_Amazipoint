@@ -8,7 +8,7 @@
 #define GPS_SOL_EXPIRY_MS 5000   // in millis. give 1 second time to combine different sentences. NMEA Frequency isn't higher anyway
 #define NMEA_MSG_GXGSA "GNGSA"  // GSA message (GPGSA, GNGSA etc)
 
-int32_t interal_inc=0;      //seger add...
+
 static int32_t toDegInt(RawDegrees d)
 {
     int32_t degMult = 10000000; // 1e7

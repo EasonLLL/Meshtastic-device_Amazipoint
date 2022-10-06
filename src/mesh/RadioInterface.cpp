@@ -192,10 +192,23 @@ const RegionInfo *myRegion;
 void initRegion()
 {
     const RegionInfo *r = regions;
-    for (; r->code != Config_LoRaConfig_RegionCode_Unset && r->code != config.lora.region; r++)
+    //Eason mark below
+    // for (; r->code != Config_LoRaConfig_RegionCode_Unset && r->code != config.lora.region; r++)
+    //     ;
+    //Eason mark above
+    
+    //Eason add below for DEBUG region
+    //find region until Config_LoRaConfig_RegionCode_TH_D
+    for (; r->code != Config_LoRaConfig_RegionCode_TH_D && r->code != config.lora.region; r++)
+    {
+        //DEBUG_MSG("[Eason]region %s, r=%d\n", r->name, r->code);//mod by eason
         ;
+    }
+    //Eason add above
+    
     myRegion = r;
-    DEBUG_MSG("Wanted region %d, using %s\n", config.lora.region, r->name);
+    //Eason mark... DEBUG_MSG("Wanted region %d, using %s\n", config.lora.region, r->name);
+    DEBUG_MSG("Wanted region %d, using %s, r=%d\n", config.lora.region, r->name, r->code);//mod by eason
 
 //Eason add below...
     //if region code > 512, than entry debug mode

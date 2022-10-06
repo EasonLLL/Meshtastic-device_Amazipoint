@@ -124,15 +124,10 @@ void SendRoutineMessageModuleRadio::sendPayload(NodeNum dest, bool wantReplies)
     p->priority = MeshPacket_Priority_BACKGROUND;
     prevPacketId = p->id;
 
-    
-
     User &u = owner;
     DEBUG_MSG("sending owner %s/%s/%s\n", u.id, u.long_name, u.short_name);
-    
-
 
     static char heartbeatString[30];
-    
     // if latitude longitude =0 0, GPS can not get position
     //if(gpsStatus->getLatitude() == 0 && gpsStatus->getLongitude() == 0)
     if(!gpsStatus->getHasLock())
@@ -144,15 +139,13 @@ void SendRoutineMessageModuleRadio::sendPayload(NodeNum dest, bool wantReplies)
         snprintf(heartbeatString, sizeof(heartbeatString), "%s/TEST %u", u.long_name, debugpacketSequence++);
     }
 
-
     p->decoded.payload.size = strlen(heartbeatString); // You must specify how many bytes are in the reply
     memcpy(p->decoded.payload.bytes, heartbeatString, p->decoded.payload.size);
 
 
-   
-    service.refreshMyNodeInfo();    //eason add..
-    service.sendToMesh(p);
-
+    //service.refreshMyNodeInfo();    //eason add..
+    //service.sendToMesh(p);
+    service.sendToMesh(p, RX_SRC_LOCAL, true);  //Eason add , sendToMesh Test OK
     // TODO: Handle this better. We want to keep the phone awake otherwise it stops sending.
     powerFSM.trigger(EVENT_CONTACT_FROM_PHONE);
 }
